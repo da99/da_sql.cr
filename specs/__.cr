@@ -51,4 +51,24 @@ describe ".inline" do
     assert actual == %{a b "c"}
   end # === it "allows single quotes at the beginning and end points"
 
+  it "allows numbers in unquoted strings" do
+    actual = DA_SQL.inline("a b {{1}}", %{cdf_123})
+    assert actual == %{a b cdf_123}
+  end # === it "allows numbers in strings"
+
+  it "allows numbers in quoted strings" do
+    actual = DA_SQL.inline("a b {{1}} {{2}}", %{"cdf_123"}, %{'efg-545'})
+    assert actual == %{a b "cdf_123" 'efg-545'}
+  end # === it "allows numbers in strings"
+
+  it "allows Int32 values" do
+    actual = DA_SQL.inline("a b {{1}} {{2}}", 1, 2)
+    assert actual == %{a b 1 2}
+  end # === it "allows Int32 values"
+
+  it "allows Int64 values" do
+    actual = DA_SQL.inline("a b {{1}} {{2}}", 1_i64, 2_i64)
+    assert actual == %{a b 1 2}
+  end # === it "allows Int64 values"
+
 end # === desc "it works"
